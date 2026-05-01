@@ -38,11 +38,12 @@ curl -X POST \
   http://SERVER_IP:5279/transcribe
 ```
 
-With optional token auth:
+With optional token auth and model override:
 
 ```bash
 cp .env.example .env
 # edit .env, set STT_API_TOKEN privately
+# edit .env, set MODEL_SIZE=small/medium/turbo if wanted
 
 docker compose up -d --build
 
@@ -69,9 +70,24 @@ Set via Docker Compose environment variables:
 | `MAX_CONCURRENT_TRANSCRIPTIONS` | `3` |
 | `MODEL_NUM_WORKERS` | same as `MAX_CONCURRENT_TRANSCRIPTIONS` |
 | `TMP_DIR` | `/dev/shm` |
+| `LOG_LEVEL` | `INFO` |
 
 ## Server notes
 
 Expose only on trusted networks or use firewall/VPN/reverse proxy auth. If `STT_API_TOKEN` is empty, anyone who can reach the port can submit audio.
 
 Concurrency: the API accepts concurrent requests. Transcription runs in a bounded thread pool controlled by `MAX_CONCURRENT_TRANSCRIPTIONS`. Default is `3`, so up to 3 requests transcribe in parallel; extra requests wait instead of spawning unlimited CPU-heavy work.
+
+Logs include model config on startup and request timing per transcription. They do not log transcript text or auth tokens.
+
+```bash
+docker compose logs -f
+```
+
+Look for lines like:
+
+```text
+loading_model model_size=turbo device=cpu compute_type=int8 ...
+transcribe_start request_id=... model_size=turbo ...
+transcribe_done request_id=... model_size=turbo audio_duration=... text_chars=... transcribe_seconds=...
+```

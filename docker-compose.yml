@@ -6,16 +6,17 @@ services:
     ports:
       - "5279:5279"
     environment:
-      MODEL_SIZE: base
-      DEVICE: cpu
-      COMPUTE_TYPE: int8
-      LANGUAGE: en
-      BEAM_SIZE: "1"
-      VAD_FILTER: "true"
-      VAD_MIN_SILENCE_DURATION_MS: "500"
-      MAX_CONCURRENT_TRANSCRIPTIONS: "3"
-      MODEL_NUM_WORKERS: "3"
-      TMP_DIR: /dev/shm
+      MODEL_SIZE: ${MODEL_SIZE:-base}
+      DEVICE: ${DEVICE:-cpu}
+      COMPUTE_TYPE: ${COMPUTE_TYPE:-int8}
+      LANGUAGE: ${LANGUAGE:-en}
+      BEAM_SIZE: ${BEAM_SIZE:-1}
+      VAD_FILTER: ${VAD_FILTER:-true}
+      VAD_MIN_SILENCE_DURATION_MS: ${VAD_MIN_SILENCE_DURATION_MS:-500}
+      MAX_CONCURRENT_TRANSCRIPTIONS: ${MAX_CONCURRENT_TRANSCRIPTIONS:-3}
+      MODEL_NUM_WORKERS: ${MODEL_NUM_WORKERS:-3}
+      TMP_DIR: ${TMP_DIR:-/dev/shm}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
       # Optional. Set this in a private .env file, not in git.
       STT_API_TOKEN: ${STT_API_TOKEN:-}
     volumes:
