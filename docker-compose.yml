@@ -1,0 +1,22 @@
+services:
+  stt-whisper-server:
+    build: .
+    container_name: stt-whisper-server
+    restart: unless-stopped
+    ports:
+      - "5279:5279"
+    environment:
+      MODEL_SIZE: base
+      DEVICE: cpu
+      COMPUTE_TYPE: int8
+      LANGUAGE: en
+      BEAM_SIZE: "1"
+      VAD_FILTER: "true"
+      VAD_MIN_SILENCE_DURATION_MS: "500"
+      # Optional. Set this in a private .env file, not in git.
+      STT_API_TOKEN: ${STT_API_TOKEN:-}
+    volumes:
+      - whisper-models:/models
+
+volumes:
+  whisper-models:
