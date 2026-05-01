@@ -6,7 +6,11 @@ services:
     ports:
       - "5279:5279"
     environment:
+      # MODEL_SIZE is legacy fallback. DEFAULT_MODEL is used when client does not send model=...
       MODEL_SIZE: ${MODEL_SIZE:-base}
+      DEFAULT_MODEL: ${DEFAULT_MODEL:-base}
+      PRELOAD_MODEL: ${PRELOAD_MODEL:-}
+      ALLOWED_MODELS: ${ALLOWED_MODELS:-tiny,tiny.en,base,base.en,small,small.en,medium,medium.en,large-v1,large-v2,large-v3,large,distil-small.en,distil-medium.en,distil-large-v2,distil-large-v3,distil-large-v3.5,large-v3-turbo,turbo}
       DEVICE: ${DEVICE:-cpu}
       COMPUTE_TYPE: ${COMPUTE_TYPE:-int8}
       LANGUAGE: ${LANGUAGE:-en}
