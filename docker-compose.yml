@@ -13,6 +13,9 @@ services:
       BEAM_SIZE: "1"
       VAD_FILTER: "true"
       VAD_MIN_SILENCE_DURATION_MS: "500"
+      MAX_CONCURRENT_TRANSCRIPTIONS: "3"
+      MODEL_NUM_WORKERS: "3"
+      TMP_DIR: /dev/shm
       # Optional. Set this in a private .env file, not in git.
       STT_API_TOKEN: ${STT_API_TOKEN:-}
     volumes:

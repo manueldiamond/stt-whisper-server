@@ -4,6 +4,8 @@ Small HTTP speech-to-text server for offloading Whisper inference from a slow lo
 
 The container keeps the `faster-whisper` model loaded in a long-running FastAPI process, so requests avoid per-request model startup cost.
 
+Audio is accepted for processing only. The server does not save transcripts and deletes the temporary uploaded audio after each request. By default temp audio is written under `/dev/shm` (tmpfs memory) inside the container.
+
 ## Model
 
 Default model: `base`
@@ -64,7 +66,12 @@ Set via Docker Compose environment variables:
 | `VAD_FILTER` | `true` |
 | `VAD_MIN_SILENCE_DURATION_MS` | `500` |
 | `STT_API_TOKEN` | empty/off |
+| `MAX_CONCURRENT_TRANSCRIPTIONS` | `3` |
+| `MODEL_NUM_WORKERS` | same as `MAX_CONCURRENT_TRANSCRIPTIONS` |
+| `TMP_DIR` | `/dev/shm` |
 
 ## Server notes
 
 Expose only on trusted networks or use firewall/VPN/reverse proxy auth. If `STT_API_TOKEN` is empty, anyone who can reach the port can submit audio.
+
+Concurrency: the API accepts concurrent requests. Transcription runs in a bounded thread pool controlled by `MAX_CONCURRENT_TRANSCRIPTIONS`. Default is `3`, so up to 3 requests transcribe in parallel; extra requests wait instead of spawning unlimited CPU-heavy work.
